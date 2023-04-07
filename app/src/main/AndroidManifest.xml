@@ -24,7 +24,12 @@
             android:name=".features.app.presentation.activities.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.GuideProject">
+        </activity>
 
+        <activity
+            android:name=".features.intro.presentation.activities.IntroductionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.GuideProject">
         </activity>
     </application>
 </manifest>

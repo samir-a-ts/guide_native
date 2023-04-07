@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GuideProject</string>
+    <string name="intro_skip_button_text">Пропустить</string>
 </resources>

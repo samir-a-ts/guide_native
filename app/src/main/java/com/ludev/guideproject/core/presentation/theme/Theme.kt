@@ -5,10 +5,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.ludev.guideproject.ui.theme.PrimaryColor
-import com.ludev.guideproject.ui.theme.Shapes
-import com.ludev.guideproject.ui.theme.Typography
-import com.ludev.guideproject.ui.theme.YellowColor
 
 private val ColorPalette = lightColors(
     primary = PrimaryColor,
@@ -22,7 +18,9 @@ val Colors.yellowColor: Color
 fun GuideProjectTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colors = ColorPalette,
-        typography = Typography,
+        typography = Typography.apply {
+
+        },
         shapes = Shapes,
         content = content,
     )

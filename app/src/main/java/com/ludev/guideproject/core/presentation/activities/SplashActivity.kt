@@ -2,7 +2,9 @@ package com.ludev.guideproject.core.presentation.activities
 
 import Center
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,20 +22,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.R
 import com.ludev.guideproject.features.app.presentation.activities.MainActivity
-import com.ludev.guideproject.features.intro.domain.ILaunchRepository
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
 import com.ludev.guideproject.core.presentation.theme.yellowColor
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import com.ludev.guideproject.features.intro.presentation.activities.IntroductionActivity
 
 
 @SuppressLint("CustomSplashScreen")
-@AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
-    @Inject lateinit var launchRepository: ILaunchRepository
+
+    private val _launchedKey = "IS_LAUNCHED"
+
+    private lateinit var _preferences: SharedPreferences
+
+    private fun  isLaunchedForTheFirstTime(): Boolean {
+        val result = _preferences.getBoolean(_launchedKey, false)
+
+        if (!result) {
+            with(_preferences.edit()) {
+                putBoolean(_launchedKey, true)
+            }
+        }
+
+        return result
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        _preferences = getSharedPreferences("app_cache", Context.MODE_PRIVATE)
 
         setContent {
             GuideProjectTheme {
@@ -62,11 +78,12 @@ class SplashActivity : ComponentActivity() {
 
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                val isLaunched = launchRepository.isFirstLaunch()
+
+                val isLaunched = isLaunchedForTheFirstTime()
 
                 val intent = Intent(
                     this,
-                    if (isLaunched) MainActivity::class.java else MainActivity::class.java
+                    if (!isLaunched) IntroductionActivity::class.java else MainActivity::class.java
                 )
 
                 startActivity(intent)

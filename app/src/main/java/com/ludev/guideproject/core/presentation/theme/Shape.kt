@@ -1,4 +1,4 @@
-package com.ludev.guideproject.ui.theme
+package com.ludev.guideproject.core.presentation.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
