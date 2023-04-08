@@ -30,20 +30,12 @@ import com.ludev.guideproject.features.intro.presentation.activities.Introductio
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : ComponentActivity() {
 
-    private val _launchedKey = "IS_LAUNCHED"
+    private val _introShownKey = "IS_INTRO_SHOWN"
 
     private lateinit var _preferences: SharedPreferences
 
-    private fun  isLaunchedForTheFirstTime(): Boolean {
-        val result = _preferences.getBoolean(_launchedKey, false)
-
-        if (!result) {
-            with(_preferences.edit()) {
-                putBoolean(_launchedKey, true)
-            }
-        }
-
-        return result
+    private fun  isIntroShownForTheFirstTime(): Boolean {
+        return _preferences.getBoolean(_introShownKey, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,11 +71,11 @@ class SplashActivity : ComponentActivity() {
         Handler(Looper.getMainLooper()).postDelayed(
             {
 
-                val isLaunched = isLaunchedForTheFirstTime()
+                val isShown = isIntroShownForTheFirstTime()
 
                 val intent = Intent(
                     this,
-                    if (!isLaunched) IntroductionActivity::class.java else MainActivity::class.java
+                    if (!isShown) IntroductionActivity::class.java else MainActivity::class.java
                 )
 
                 startActivity(intent)

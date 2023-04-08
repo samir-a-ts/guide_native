@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">GuideProject</string>
     <string name="intro_skip_button_text">Пропустить</string>
+    <string name="intro_welcome_to_guide_1">Добро пожаловать в Путеводитель</string>
+    <string name="intro_welcome_to_guide_desc_1">Ищи новые локации и сохраняй самые любимые.</string>
+    <string name="intro_welcome_to_guide_2">Построй маршрут и отправляйся в путь</string>
+    <string name="intro_welcome_to_guide_desc_2">Достигай цели максимально быстро и комфортно.</string>
+    <string name="intro_welcome_to_guide_3">Добавляй места, которые нашёл сам</string>
+    <string name="intro_welcome_to_guide_desc_3">Делись самыми интересными и помоги нам стать лучше!</string>
+    <string name="proceed_button_text">НА СТАРТ</string>
 </resources>
