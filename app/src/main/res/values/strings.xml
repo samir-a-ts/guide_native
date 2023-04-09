@@ -8,4 +8,5 @@
     <string name="intro_welcome_to_guide_3">Добавляй места, которые нашёл сам</string>
     <string name="intro_welcome_to_guide_desc_3">Делись самыми интересными и помоги нам стать лучше!</string>
     <string name="proceed_button_text">НА СТАРТ</string>
+    <string name="places_list_app_bar">Список интересных мест</string>
 </resources>

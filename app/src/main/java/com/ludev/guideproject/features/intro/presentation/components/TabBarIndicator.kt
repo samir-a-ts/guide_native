@@ -1,5 +1,6 @@
 package com.ludev.guideproject.features.intro.presentation.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +20,7 @@ fun TabBarIndicator(
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
         ) {
             for (i in 0 until length) {
                 Indicator(current == i)
@@ -32,8 +34,9 @@ fun Indicator(selected: Boolean) {
         modifier =
             Modifier
                 .padding(horizontal = 4.dp)
-                .size(if (selected) 24.dp else 8.dp, 8.dp)
                 .clip(CircleShape)
+                .animateContentSize()
+                .size(if (selected) 24.dp else 8.dp, 8.dp)
                 .background(
                     color = if (selected)
                         MaterialTheme.colors.primary
