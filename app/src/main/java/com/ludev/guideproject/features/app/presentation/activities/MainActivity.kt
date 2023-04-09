@@ -12,10 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
-import com.ludev.guideproject.features.places_list.presentation.PlacesListTabView
+import com.ludev.guideproject.features.app.domain.di.DaggerMainComponent
+import com.ludev.guideproject.features.app.domain.di.PlacesListModule
+import com.ludev.guideproject.features.places_list.presentation.activities.PlacesListTabView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        DaggerMainComponent
+            .builder()
+            .placesListModule(PlacesListModule())
+            .build()
+            .initialize(this)
+
         super.onCreate(savedInstanceState)
 
         setContent {

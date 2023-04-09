@@ -2,7 +2,6 @@ package com.ludev.guideproject.core.presentation.activities
 
 import Center
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -21,10 +20,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.R
+import com.ludev.guideproject.core.domain.di.ApplicationContextModule
 import com.ludev.guideproject.features.app.presentation.activities.MainActivity
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
 import com.ludev.guideproject.core.presentation.theme.yellowColor
+import com.ludev.guideproject.features.intro.domain.di.DaggerSplashComponent
 import com.ludev.guideproject.features.intro.presentation.activities.IntroductionActivity
+import javax.inject.Inject
 
 
 @SuppressLint("CustomSplashScreen")
@@ -32,16 +34,23 @@ class SplashActivity : ComponentActivity() {
 
     private val _introShownKey = "IS_INTRO_SHOWN"
 
-    private lateinit var _preferences: SharedPreferences
+    @Inject
+    lateinit var _preferences: SharedPreferences
 
     private fun  isIntroShownForTheFirstTime(): Boolean {
         return _preferences.getBoolean(_introShownKey, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        DaggerSplashComponent
+            .builder()
+            .applicationContextModule(
+                ApplicationContextModule(applicationContext)
+            )
+            .build()
+            .initialize(this)
 
-        _preferences = getSharedPreferences("app_cache", Context.MODE_PRIVATE)
+        super.onCreate(savedInstanceState)
 
         setContent {
             GuideProjectTheme {

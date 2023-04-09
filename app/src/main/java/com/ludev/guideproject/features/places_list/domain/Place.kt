@@ -1,4 +1,4 @@
-package com.ludev.guideproject.features.app.domain
+package com.ludev.guideproject.features.places_list.domain
 
 enum class PlaceType {
 

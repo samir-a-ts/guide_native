@@ -1,4 +1,4 @@
-package com.ludev.guideproject.features.places_list.presentation
+package com.ludev.guideproject.features.places_list.presentation.activities
 
 import Center
 import androidx.compose.foundation.layout.*
@@ -13,10 +13,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.R
+import com.ludev.guideproject.core.presentation.state.ContentEntityState
+import com.ludev.guideproject.core.presentation.state.ErrorEntityState
+import com.ludev.guideproject.core.presentation.state.LoadingEntityState
+import com.ludev.guideproject.features.places_list.presentation.state.PlacesListViewModel
 
 @Composable
 @Preview
 fun PlacesListTabView() {
+    val viewModel = PlacesListViewModel()
+
+    viewModel.execute()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -29,6 +37,22 @@ fun PlacesListTabView() {
         ) {
             item {
                 PlacesListAppBar()
+            }
+
+            item {
+                when (viewModel.uiState.value.placeListState) {
+                    is ContentEntityState -> {
+                        Text(text = "Content")
+                    }
+
+                    is LoadingEntityState -> {
+                        Text(text = "Loading")
+                    }
+
+                    is ErrorEntityState -> {
+                        Text(text = "Error")
+                    }
+                }
             }
         }
     }
