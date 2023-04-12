@@ -1,8 +1,6 @@
-package com.ludev.guideproject.features.intro.domain.di
+package com.ludev.guideproject.core.domain.di
 
 import android.content.Context
-import com.ludev.guideproject.core.domain.di.ApplicationContextModule
-import com.ludev.guideproject.core.domain.di.SharedPreferencesModule
 import com.ludev.guideproject.core.presentation.activities.SplashActivity
 import dagger.Component
 

@@ -21,10 +21,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.R
 import com.ludev.guideproject.core.domain.di.ApplicationContextModule
+import com.ludev.guideproject.core.domain.di.DaggerSplashComponent
 import com.ludev.guideproject.features.app.presentation.activities.MainActivity
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
 import com.ludev.guideproject.core.presentation.theme.yellowColor
-import com.ludev.guideproject.features.intro.domain.di.DaggerSplashComponent
 import com.ludev.guideproject.features.intro.presentation.activities.IntroductionActivity
 import javax.inject.Inject
 

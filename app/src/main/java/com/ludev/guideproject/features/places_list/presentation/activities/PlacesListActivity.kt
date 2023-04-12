@@ -16,12 +16,20 @@ import com.ludev.guideproject.R
 import com.ludev.guideproject.core.presentation.state.ContentEntityState
 import com.ludev.guideproject.core.presentation.state.ErrorEntityState
 import com.ludev.guideproject.core.presentation.state.LoadingEntityState
+import com.ludev.guideproject.features.app.domain.di.DaggerMainComponent
+import com.ludev.guideproject.features.app.domain.di.PlacesListModule
 import com.ludev.guideproject.features.places_list.presentation.state.PlacesListViewModel
 
 @Composable
 @Preview
 fun PlacesListTabView() {
     val viewModel = PlacesListViewModel()
+
+    DaggerMainComponent
+        .builder()
+        .placesListModule(PlacesListModule())
+        .build()
+        .initialize(viewModel)
 
     viewModel.execute()
 

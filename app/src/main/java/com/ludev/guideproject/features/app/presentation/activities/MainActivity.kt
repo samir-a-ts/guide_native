@@ -18,11 +18,7 @@ import com.ludev.guideproject.features.places_list.presentation.activities.Place
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        DaggerMainComponent
-            .builder()
-            .placesListModule(PlacesListModule())
-            .build()
-            .initialize(this)
+
 
         super.onCreate(savedInstanceState)
 
