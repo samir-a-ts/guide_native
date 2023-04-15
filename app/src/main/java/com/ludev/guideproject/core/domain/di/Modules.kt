@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import javax.inject.Singleton
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 @Module
@@ -22,13 +22,29 @@ class SharedPreferencesModule {
     }
 }
 
+object RetrofitLibraryProvider {
+    private val baseUrl = "https://test-backend-flutter.surfstudio.ru"
+
+    private var retrofit: Retrofit? = null
+
+    @Synchronized
+    fun getInstance(): Retrofit {
+        if (retrofit == null) {
+            retrofit = Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        }
+
+        return retrofit!!
+    }
+}
+
+
 @Module
 class RetrofitModule {
-    private val baseUrl = "https://test-backend-flutter.surfstudio.ru";
     @Provides
     fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .build()
+        return RetrofitLibraryProvider.getInstance()
     }
 }

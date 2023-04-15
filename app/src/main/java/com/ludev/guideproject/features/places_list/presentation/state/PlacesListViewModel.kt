@@ -4,11 +4,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ludev.guideproject.core.presentation.state.EmptyEntityState
+import com.ludev.guideproject.core.presentation.state.ContentEntityState
 import com.ludev.guideproject.core.presentation.state.EntityState
 import com.ludev.guideproject.features.places_list.domain.Place
 import com.ludev.guideproject.features.places_list.domain.PlacesListRepository
 import kotlinx.coroutines.launch
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 data class PlacesListUiState(
@@ -20,7 +22,7 @@ class PlacesListViewModel : ViewModel() {
 
     private val _uiState = mutableStateOf(
         PlacesListUiState(
-            EmptyEntityState()
+            ContentEntityState(null)
         )
     )
 
@@ -32,15 +34,43 @@ class PlacesListViewModel : ViewModel() {
                 placeListState = _uiState.value.placeListState.loading(),
             )
 
-            val result = placesListRepository.listRepos()?.execute() ?: return@launch
+            val result = placesListRepository.listRepos()
 
-                _uiState.value = _uiState.value.copy(
-                    placeListState = if (!result.isSuccessful) _uiState.value.placeListState.error(
-                        result.message(),
-                    ) else  _uiState.value.placeListState.content(
-                        result.body() as List<Place>,
-                    )
-                )
+            result?.enqueue(
+                object : Callback<List<Place?>?> {
+                    override fun onResponse(
+                        call: retrofit2.Call<List<Place?>?>,
+                        response: Response<List<Place?>?>
+                    ) {
+                        if (!response.isSuccessful) {
+                            _uiState.value = _uiState.value.copy(
+                                placeListState =  _uiState.value.placeListState.error(
+                                    response.message(),
+                                )
+                            )
+
+                            return
+                        }
+
+                        val result = response.body()
+
+                        _uiState.value = _uiState.value.copy(
+                            placeListState = _uiState.value.placeListState.content(result as List<Place>?),
+                        )
+                    }
+
+                    override fun onFailure(call: retrofit2.Call<List<Place?>?>, t: Throwable) {
+                        _uiState.value = _uiState.value.copy(
+                            placeListState = _uiState.value.placeListState.error(t.message)
+                        )
+                    }
+
+                }
+            )
+
+//            val result = placesListRepository.listRepos()?.execute() ?: return@launch
+//
+
         }
     }
 }

@@ -8,6 +8,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,15 +25,17 @@ import com.ludev.guideproject.features.places_list.presentation.state.PlacesList
 @Composable
 @Preview
 fun PlacesListTabView() {
-    val viewModel = PlacesListViewModel()
+    val viewModel = remember { PlacesListViewModel() }
 
-    DaggerMainComponent
-        .builder()
-        .placesListModule(PlacesListModule())
-        .build()
-        .initialize(viewModel)
+    LaunchedEffect(key1 = Unit) {
+        DaggerMainComponent
+            .builder()
+            .placesListModule(PlacesListModule())
+            .build()
+            .initialize(viewModel)
 
-    viewModel.execute()
+        viewModel.execute()
+    }
 
     Scaffold(
         modifier = Modifier
@@ -50,7 +54,12 @@ fun PlacesListTabView() {
             item {
                 when (viewModel.uiState.value.placeListState) {
                     is ContentEntityState -> {
-                        Text(text = "Content")
+                        val value = viewModel.uiState.value.placeListState.value
+
+                        if (value == null)
+                            Text(text = "Empty")
+                        else
+                            Text(text = "Content")
                     }
 
                     is LoadingEntityState -> {
