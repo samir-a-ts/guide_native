@@ -24,6 +24,9 @@ val Colors.disabledColor: Color
 val Colors.thirdColor: Color
     get() = ThirdColor
 
+val Colors.inputColor: Color
+    get() = InputColor
+
 @Composable
 fun GuideProjectTheme(content: @Composable () -> Unit) {
     MaterialTheme(
