@@ -8,33 +8,34 @@ import com.ludev.guideproject.core.presentation.state.ContentEntityState
 import com.ludev.guideproject.core.presentation.state.EntityState
 import com.ludev.guideproject.features.places_list.domain.Place
 import com.ludev.guideproject.features.places_list.domain.PlacesListRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-data class PlacesListUiState(
-    val placeListState: EntityState<List<Place>>
-)
+@HiltViewModel
+class PlacesListViewModel @Inject constructor(
+    private val placesListRepository: PlacesListRepository,
+) : ViewModel() {
 
-class PlacesListViewModel : ViewModel() {
-    @Inject lateinit var placesListRepository: PlacesListRepository
-
-    private val _uiState = mutableStateOf(
-        PlacesListUiState(
-            ContentEntityState(null)
-        )
+    private val _placesListState = mutableStateOf<EntityState<List<Place>?>>(
+        ContentEntityState(null)
     )
 
-    val uiState: State<PlacesListUiState> = _uiState
+    val placesListState: State<EntityState<List<Place>?>> = _placesListState
+
+    fun updateState(generator: (current: EntityState<List<Place>?>) -> EntityState<List<Place>?>) {
+        _placesListState.value = generator(_placesListState.value)
+    }
 
     fun execute() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(
-                placeListState = _uiState.value.placeListState.loading(),
-            )
+            updateState {
+                it.loading()
+            }
 
-            val result = placesListRepository.listRepos()
+            val result = placesListRepository.getPlacesList()
 
             result?.enqueue(
                 object : Callback<List<Place?>?> {
@@ -43,34 +44,26 @@ class PlacesListViewModel : ViewModel() {
                         response: Response<List<Place?>?>
                     ) {
                         if (!response.isSuccessful) {
-                            _uiState.value = _uiState.value.copy(
-                                placeListState =  _uiState.value.placeListState.error(
-                                    response.message(),
-                                )
-                            )
+                            updateState {
+                                it.error(response.message())
+                            }
 
                             return
                         }
 
-                        val result = response.body()
-
-                        _uiState.value = _uiState.value.copy(
-                            placeListState = _uiState.value.placeListState.content(result as List<Place>?),
-                        )
+                        updateState {
+                            it.content(response.body() as List<Place>?)
+                        }
                     }
 
                     override fun onFailure(call: retrofit2.Call<List<Place?>?>, t: Throwable) {
-                        _uiState.value = _uiState.value.copy(
-                            placeListState = _uiState.value.placeListState.error(t.message)
-                        )
+                        updateState {
+                            it.error(t.message)
+                        }
                     }
 
                 }
             )
-
-//            val result = placesListRepository.listRepos()?.execute() ?: return@launch
-//
-
         }
     }
 }

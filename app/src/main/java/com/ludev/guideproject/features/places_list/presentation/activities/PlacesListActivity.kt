@@ -3,40 +3,25 @@ package com.ludev.guideproject.features.places_list.presentation.activities
 import Center
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.FabPosition
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ludev.guideproject.R
+import com.ludev.guideproject.core.presentation.components.ErrorIndicator
 import com.ludev.guideproject.core.presentation.state.ContentEntityState
 import com.ludev.guideproject.core.presentation.state.ErrorEntityState
 import com.ludev.guideproject.core.presentation.state.LoadingEntityState
-import com.ludev.guideproject.features.app.domain.di.DaggerMainComponent
-import com.ludev.guideproject.features.app.domain.di.PlacesListModule
+import com.ludev.guideproject.features.places_list.domain.Place
 import com.ludev.guideproject.features.places_list.presentation.state.PlacesListViewModel
 
+
 @Composable
-@Preview
-fun PlacesListTabView() {
-    val viewModel = remember { PlacesListViewModel() }
-
-    LaunchedEffect(key1 = Unit) {
-        DaggerMainComponent
-            .builder()
-            .placesListModule(PlacesListModule())
-            .build()
-            .initialize(viewModel)
-
-        viewModel.execute()
-    }
-
+fun PlacesListScreen(
+    viewModel: PlacesListViewModel,
+) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -52,24 +37,85 @@ fun PlacesListTabView() {
             }
 
             item {
-                when (viewModel.uiState.value.placeListState) {
-                    is ContentEntityState -> {
-                        val value = viewModel.uiState.value.placeListState.value
+                TappableInput()
+            }
 
-                        if (value == null)
-                            Text(text = "Empty")
-                        else
+            when (val value = viewModel.placesListState.value) {
+                is ContentEntityState<List<Place>?> -> {
+                    if (value.value == null)
+                        item {
+                            Center {
+                                ErrorIndicator(
+                                    title = stringResource(id = R.string.error),
+                                    description = stringResource(id = R.string.response_is_empty),
+                                    iconId = R.drawable.ic_search,
+                                )
+                            }
+                        }
+                            else
+                        item {
                             Text(text = "Content")
-                    }
+                        }
+                }
 
-                    is LoadingEntityState -> {
+                is LoadingEntityState<List<Place>?> -> {
+                    item {
                         Text(text = "Loading")
                     }
+                }
 
-                    is ErrorEntityState -> {
-                        Text(text = "Error")
+                is ErrorEntityState<List<Place>?> -> {
+                    item {
+                        Center {
+                            ErrorIndicator(
+                                title = stringResource(id = R.string.error),
+                                description = stringResource(id = R.string.something_is_odd),
+                            )
+                        }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun TappableInput() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .padding(
+                horizontal = 15.dp,
+                vertical = 11.dp,
+            )
+    ) {
+        Row {
+           Box(
+               modifier = Modifier
+               .size(20.dp),
+           ) {
+               Icon(
+                   painter = painterResource(id = R.drawable.ic_search),
+                   contentDescription = "Search prefix icon",
+               )
+           }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.search),
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(20.dp),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.search),
+                )
             }
         }
     }

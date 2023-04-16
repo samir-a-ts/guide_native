@@ -4,6 +4,7 @@ import com.ludev.guideproject.R
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -11,19 +12,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
-import com.ludev.guideproject.features.app.domain.di.DaggerMainComponent
-import com.ludev.guideproject.features.app.domain.di.PlacesListModule
-import com.ludev.guideproject.features.places_list.presentation.activities.PlacesListTabView
+import com.ludev.guideproject.features.places_list.presentation.activities.PlacesListScreen
+import com.ludev.guideproject.features.places_list.presentation.state.PlacesListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val placesListViewModel: PlacesListViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
+
+        placesListViewModel.execute()
 
         setContent {
             var selectedIndex by remember { mutableStateOf(0) }
+
+            val rootNavController = rememberNavController()
 
             GuideProjectTheme {
                 Scaffold(
@@ -33,7 +47,8 @@ class MainActivity : ComponentActivity() {
                             selectedIndex = selectedIndex,
                             onSelected = {
                                 selectedIndex = it
-                            }
+                            },
+                            navController = rootNavController,
                         )
                     },
                 ) {
@@ -42,14 +57,38 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(paddingValues = it),
                     ) {
-                       when (selectedIndex) {
-                           0 -> PlacesListTabView()
-                           1 -> Text(text = "1")
-                           2 -> Text(text = "2")
-                           3 -> Text(text = "3")
-                       }
+                        NavHost(
+                            navController = rootNavController,
+                            startDestination = "list",
+
+                        ) {
+                            listGraph()
+
+                            composable("map") {
+                                Text(text = "Map")
+                            }
+
+                            composable("favorite") {
+                                Text(text = "Favorite")
+                            }
+
+                            composable("settings") {
+                                Text(text = "Settings")
+                            }
+                        }
                     }
                 }
+            }
+        }
+    }
+
+
+    private fun NavGraphBuilder.listGraph() {
+        navigation(startDestination = "root", route = "list") {
+            composable("root") {
+                PlacesListScreen(
+                    viewModel = placesListViewModel,
+                )
             }
         }
     }
@@ -58,6 +97,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainBottomBar(
     selectedIndex: Int? = null,
+    navController: NavController,
     onSelected: (Int) -> Unit = {},
 ) {
     val icons = listOf(
@@ -74,6 +114,13 @@ fun MainBottomBar(
         R.drawable.settings_filled,
     )
 
+    val routes = listOf(
+        "list",
+        "map",
+        "favorite",
+        "settings",
+    )
+
     BottomAppBar(
         cutoutShape = CircleShape,
         backgroundColor = MaterialTheme.colors.background,
@@ -87,6 +134,8 @@ fun MainBottomBar(
                 selected = selected,
                 onClick = {
                     onSelected(i)
+
+                    navController.navigate(routes[i])
                 },
                 selectedContentColor = MaterialTheme.colors.onSurface,
                 unselectedContentColor = MaterialTheme.colors.onSecondary,

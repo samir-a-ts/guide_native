@@ -9,4 +9,8 @@
     <string name="intro_welcome_to_guide_desc_3">Делись самыми интересными и помоги нам стать лучше!</string>
     <string name="proceed_button_text">НА СТАРТ</string>
     <string name="places_list_app_bar">Список интересных мест</string>
+    <string name="error">Ошибка</string>
+    <string name="response_is_empty">Нет данных.</string>
+    <string name="something_is_odd">Что то пошло не так Попробуйте позже.</string>
+    <string name="search">Поиск</string>
 </resources>
