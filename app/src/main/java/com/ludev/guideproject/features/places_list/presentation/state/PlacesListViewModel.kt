@@ -1,6 +1,5 @@
 package com.ludev.guideproject.features.places_list.presentation.state
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,14 +19,12 @@ class PlacesListViewModel @Inject constructor(
     private val placesListRepository: PlacesListRepository,
 ) : ViewModel() {
 
-    private val _placesListState = mutableStateOf<EntityState<List<Place>?>>(
+    val placesListState = mutableStateOf<EntityState<List<Place>?>>(
         ContentEntityState(listOf())
     )
 
-    val placesListState: State<EntityState<List<Place>?>> = _placesListState
-
     fun updateState(generator: (current: EntityState<List<Place>?>) -> EntityState<List<Place>?>) {
-        _placesListState.value = generator(_placesListState.value)
+        placesListState.value = generator(placesListState.value)
     }
 
     private var currentPage: Int = 0
@@ -70,8 +67,16 @@ class PlacesListViewModel @Inject constructor(
                         return
                     }
 
+                    val content = arrayListOf<Place>()
+
+                    placesListState.value.value?.let { content.addAll(it) }
+
+                    val result = response.body() as Collection<Place>
+
+                    content.addAll(result)
+
                     updateState {
-                        it.content(it.value?.plus((response.body() as List<Place>?)) as List<Place>?)
+                        it.content(content.toList())
                     }
 
                     currentPage++

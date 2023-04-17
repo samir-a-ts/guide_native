@@ -32,12 +32,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        placesListViewModel.initialize()
 
         setContent {
             var selectedIndex by remember { mutableStateOf(0) }
 
             val rootNavController = rememberNavController()
+
+            LaunchedEffect(key1 = "main_activity") {
+                placesListViewModel.initialize()
+            }
 
             GuideProjectTheme {
                 Scaffold(

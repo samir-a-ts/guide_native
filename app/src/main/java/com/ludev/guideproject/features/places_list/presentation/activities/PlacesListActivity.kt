@@ -4,10 +4,13 @@ import Center
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,11 +76,18 @@ fun PlacesListScreen(
                             }
                         }
                             else {
-                        items(list.size) { index ->
-                            PlaceCard(
-                                place = list[index],
-                            )
-                            Gap(size = 24.dp)
+                        items(list, key = {
+                            item: Place ->  item.id
+                        }) { item ->
+
+                            val place = item as? Place
+
+                            if (place != null) {
+                                PlaceCard(
+                                    place = place,
+                                )
+                                Gap(size = 24.dp)
+                            }
                         }
                     }
                 }
