@@ -13,4 +13,5 @@
     <string name="response_is_empty">Нет данных.</string>
     <string name="something_is_odd">Что то пошло не так Попробуйте позже.</string>
     <string name="search">Поиск</string>
+    <string name="create_new_place">НОВОЕ МЕСТО</string>
 </resources>

@@ -20,6 +20,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.ludev.guideproject.core.presentation.theme.GuideProjectTheme
 import com.ludev.guideproject.features.places_list.presentation.activities.PlacesListScreen
+import com.ludev.guideproject.features.places_list.presentation.activities.PlacesListSearchActivity
+import com.ludev.guideproject.features.places_list.presentation.state.PlacesListSearchViewModel
 import com.ludev.guideproject.features.places_list.presentation.state.PlacesListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,18 +31,15 @@ class MainActivity : ComponentActivity() {
 
     private val placesListViewModel: PlacesListViewModel by viewModels()
 
+    private val placesListSearchViewModel: PlacesListSearchViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         setContent {
             var selectedIndex by remember { mutableStateOf(0) }
 
             val rootNavController = rememberNavController()
-
-            LaunchedEffect(key1 = "main_activity") {
-                placesListViewModel.initialize()
-            }
 
             GuideProjectTheme {
                 Scaffold(
@@ -65,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = "list",
 
                         ) {
-                            listGraph()
+                            listGraph(rootNavController)
 
                             composable("map") {
                                 Text(text = "Map")
@@ -86,11 +85,17 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun NavGraphBuilder.listGraph() {
+    private fun NavGraphBuilder.listGraph(navController: NavController) {
         navigation(startDestination = "root", route = "list") {
             composable("root") {
                 PlacesListScreen(
                     viewModel = placesListViewModel,
+                    navController = navController,
+                )
+            }
+            composable("search") {
+                PlacesListSearchActivity(
+                    viewModel = placesListSearchViewModel,
                 )
             }
         }

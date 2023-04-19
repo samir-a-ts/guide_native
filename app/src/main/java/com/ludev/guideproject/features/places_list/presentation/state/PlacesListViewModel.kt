@@ -29,18 +29,12 @@ class PlacesListViewModel @Inject constructor(
 
     private var currentPage: Int = 0
 
-    fun initialize() {
+    fun reload() {
         viewModelScope.launch {
             updateState {
                 it.loading()
             }
 
-            loadData()
-        }
-    }
-
-    fun reload() {
-        viewModelScope.launch {
             loadData()
         }
     }
